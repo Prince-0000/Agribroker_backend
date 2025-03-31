@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Middleman {
+  id         Int    @id @default(autoincrement())
+  name       String
+  email      String @unique
+  password   String
+  createdAt  DateTime @default(now())
+  farmers    Farmer[]
+  reports    Report[]
+}
+
+model Farmer {
+  id          Int    @id @default(autoincrement())
+  middlemanId Int
+  name        String
+  contact     String @unique
+  address     String
+  createdAt   DateTime @default(now())
+  
+  middleman   Middleman @relation(fields: [middlemanId], references: [id], onDelete: Cascade)
+  crops       Crop[]
+  reports     Report[]
+}
+
+model Crop {
+  id              Int     @id @default(autoincrement())
+  farmerId        Int
+  name            String
+  quantity        Int
+  pricePerUnit    Decimal
+  totalPrice      Decimal @default(0)
+  dateOfCollection DateTime
+  createdAt       DateTime @default(now())
+
+  farmer          Farmer @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id            Int     @id @default(autoincrement())
+  middlemanId   Int
+  farmerId      Int
+  startDate     DateTime
+  endDate       DateTime
+  reportType    String
+  generatedAt   DateTime @default(now())
+
+  middleman     Middleman @relation(fields: [middlemanId], references: [id], onDelete: Cascade)
+  farmer        Farmer @relation(fields: [farmerId], references: [id], onDelete: Cascade)
+}
