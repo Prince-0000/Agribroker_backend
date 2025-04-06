@@ -1,3 +1,4 @@
+require("dotenv").config();
 const { expressjwt: jwt } = require("express-jwt");
 const jwksRsa = require("jwks-rsa");
 
@@ -6,10 +7,10 @@ const checkJwt = jwt({
     cache: true,
     rateLimit: true,
     jwksRequestsPerMinute: 5,
-    jwksUri: 'https://dev-nbcu7rg7f1xqd021.us.auth0.com/.well-known/jwks.json'
+    jwksUri: process.env.JWK_URI
   }),
-  audience: 'https://agribroker-api',
-  issuer: 'https://dev-nbcu7rg7f1xqd021.us.auth0.com/',
+  audience: process.env.AUTH0_AUDIENCE,
+  issuer: process.env.AUTH0_ISSUER_URL,
   algorithms: ['RS256']
 });
 
